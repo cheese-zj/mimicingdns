@@ -24,7 +24,7 @@ def load_records(config_file):
 
 
 def handle_client(conn, records):
-    data = conn.recv(THISPORT).decode().strip()
+    data = conn.recv(1024).decode().strip()
 
     if data.startswith("!"):
         # Command Handling
@@ -47,8 +47,11 @@ def handle_client(conn, records):
             sys.stdout.write("INVALID\n")
     elif data in records:
         conn.sendall(str(records[data]).encode())
+        sys.stdout.write(f"resolve {data} to {records[data]}\n")
     else:
+        sys.stdout.write(f"resolve {data} to NXDOMAIN\n")
         sys.stdout.write("INVALID\n")
+
 
 def main(args: list[str]) -> None:
 

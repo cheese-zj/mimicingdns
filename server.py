@@ -48,6 +48,7 @@ def handle_client(conn, records):
         conn.sendall((str(records[data])+"\n").encode())
         sys.stdout.write(f"resolve {data} to {records[data]}\n")
     else:
+        conn.sendall(str("NXDOMAIN").encode())
         sys.stdout.write(f"resolve {data} to NXDOMAIN\n")
 
 def main(args: list[str]) -> None:

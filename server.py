@@ -8,7 +8,7 @@ import sys
 import socket
 import typing
 
-THISPORT = 1000;
+THISPORT = 1024;
 # Load records from config_file
 def load_records(config_file):
     records = {}
@@ -16,7 +16,6 @@ def load_records(config_file):
         configdata=f.readlines()
     global THISPORT
     THISPORT = int(configdata[0])
-
     for line in configdata[1:]:
         hostname, port = line.strip().split(',')
         records[hostname] = int(port)
@@ -63,8 +62,6 @@ def main(args: list[str]) -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(('127.0.0.1', THISPORT))
         s.listen()
-        #sys.stdout.write(f"Server listening on port {s.getsockname()[1]}\n")
-
         while True:
             conn, addr = s.accept()
             with conn:

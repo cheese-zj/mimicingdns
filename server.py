@@ -8,10 +8,10 @@ import sys
 import socket
 import typing
 
-THISPORT = 1024;
+THISPORT = 1000;
 # Load records from config_file
 def load_records(config_file):
-    records = {}
+    records = dict()
     with open(config_file, 'r') as f:
         configdata=f.readlines()
     global THISPORT

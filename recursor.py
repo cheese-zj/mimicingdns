@@ -37,8 +37,7 @@ def verify_hostname(hostname):
 
 def query_dns_server(server_port, query):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect(("localhost", server_port))
-        s.sendall(query.encode())
+        s.connect((query, server_port))
         data = s.recv(1024)
     return data.decode()
 

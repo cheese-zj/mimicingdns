@@ -9,84 +9,74 @@ import sys
 import socket
 import time
 
-def is_valid_component(s):
-    # Check if string s is non-empty and only contains alphanumeric or hyphen characters
-    return s and all(c.isalnum() or c == '-' for c in s)
 
-
-def verify_hostname(hostname):
-    # Split the hostname by dots
-    parts = hostname.split('.')
-
-    # Ensure there are at least 3 components (A, B, C)
-    if len(parts) < 3:
+def is_valid_domain(domain):
+    # A basic domain validation for this example; can be extended
+    if any(len(part) == 0 for part in domain.split('.')):
         return False
-
-    # Validate A and B
-    if not is_valid_component(parts[0]) or not is_valid_component(parts[1]):
-        return False
-
-    # Validate C
-    # C should not start or end with a dot, so we ensured it by checking len(parts) >= 3 earlier
-    for component in parts[2:]:
-        # Make sure each component of C separated by a dot is valid
-        if not is_valid_component(component):
-            return False
-
     return True
 
-def query_dns_server(server_port, query):
+
+def query_server(port, message, timeout):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((query, server_port))
-        data = s.recv(1024)
-    return data.decode()
+        s.settimeout(timeout)
+        s.connect(('127.0.0.1', port))
+        s.sendall(message.encode())
+        data = s.recv(1024).decode()
+    return data
+
+
+def resolve_domain(root_port, domain, timeout):
+    start_time = time.time()
+    try:
+        # Step 1
+        port = root_port
+        message = domain.split('.')[-1] + '\n'
+        tld_port = int(query_server(port, message, timeout))
+
+        # Step 2 and 3
+        domain_parts = domain.split('.')
+        message = '.'.join(domain_parts[-2:]) + '\n'
+        auth_port = int(query_server(tld_port, message, timeout))
+
+        # Step 4, 5 and 6
+        final_port = int(query_server(auth_port, domain + '\n', timeout))
+        return str(final_port) + '\n'
+
+    except (socket.timeout, ValueError):
+        elapsed_time = time.time() - start_time
+        if elapsed_time > timeout:
+            return "NXDOMAIN"
+        else:
+            return "ERROR"
+
 
 def main(args: list[str]) -> None:
-    # Check command-line arguments
-    if len(sys.argv) != 3:
-        print("INVALID ARGUMENTS\n")
-        sys.exit(1)
+    if len(args) != 2:
+        sys.stdout.write("INVALID ARGUMENTS\n")
+        sys.exit()
 
-    root_port = int(sys.argv[1])
-    timeout = float(sys.argv[2])
+    try:
+        root_port = int(args[0])
+        if not (0 <= root_port <= 65535):
+            raise ValueError
+        timeout = float(args[1])
+    except ValueError:
+        sys.stdout.write("INVALID ARGUMENTS\n")
+        sys.exit()
 
-    while True:
-        try:
-            hostname = input("Enter hostname to resolve: ")
-
-            if not verify_hostname(hostname):
-                sys.stdout.write("INVALID")
-                continue
-
-            parts = hostname.split('.')
-            if len(parts) < 2:
-                sys.stdout.write("INVALID")
-                continue
-
-            start_time = time.time()
-
-            # Step 1
-            tld_port = int(query_dns_server(root_port, parts[-1] + "\n"))
-
-            # Step 2 and 3
-            sld_port = int(query_dns_server(tld_port, ".".join(parts[-2:]) + "\n"))
-
-            # Step 4 and 5
-            final_port = int(query_dns_server(sld_port, hostname + "\n"))
-
-            elapsed_time = time.time() - start_time
-            if elapsed_time > timeout:
-                sys.stdout.write("NXDOMAIN")
-                continue
-
-            sys.stdout.write(final_port, "\n")
-
-        except EOFError:  # Handle Ctrl-D
-            break
-        except Exception as e:
-            sys.stdout.write("Error:", e)
-            continue
-
+    try:
+        while True:
+            domain = input("Input a domain").strip()
+            if is_valid_domain(domain):
+                sys.stdout.write(resolve_domain(root_port, domain, timeout))
+            else:
+                sys.stdout.write("INVALID\n")
+    except EOFError:
+        pass
+    except ConnectionRefusedError:
+        sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
+        sys.exit()
 
 if __name__ == "__main__":
     main(argv[1:])

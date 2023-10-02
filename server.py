@@ -6,8 +6,9 @@ You may import library modules allowed by the specs, as well as your own other m
 from sys import argv
 import sys
 import socket
+import typing
 
-THISPORT = 0;
+THISPORT = 1000;
 # Load records from config_file
 def load_records(config_file):
     records = {}
@@ -20,7 +21,7 @@ def load_records(config_file):
 
 
 def handle_client(conn, records):
-    data = conn.recv(1024).decode().strip()
+    data = conn.recv(THISPORT).decode().strip()
 
     if data.startswith("!"):
         # Command Handling
@@ -56,7 +57,7 @@ def main(args: list[str]) -> None:
     records = load_records(config_file)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('127.0.0.1', 1024))
+        s.bind(('127.0.0.1', THISPORT))
         s.listen()
         sys.stdout.write(f"Server listening on port {s.getsockname()[1]}\n")
 

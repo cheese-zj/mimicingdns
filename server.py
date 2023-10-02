@@ -6,7 +6,6 @@ You may import library modules allowed by the specs, as well as your own other m
 from sys import argv
 import sys
 import socket
-import typing
 
 THISPORT = 1000;
 # Load records from config_file
@@ -27,26 +26,26 @@ def handle_client(conn, records):
     if data.startswith("!"):
         # Command Handling
         parts = data[1:].split(' ')
-        command = parts[0]
-        if command == "ADD\n" and len(parts) == 3:
+        cmd = parts[0]
+        if cmd == "ADD" and len(parts) == 3:
             hostname, port = parts[1], parts[2]
             if hostname not in records and 1024 <= int(port) <= 65535:
                 records[hostname] = int(port)
             elif hostname in records:
                 records[hostname] = int(port)
-        elif command == "DEL\n" and len(parts) == 2:
+        elif cmd == "DEL" and len(parts) == 2:
             hostname = parts[1]
             if hostname in records:
                 del records[hostname]
-        elif command == "EXIT\n":
-            sys.exit()
+        elif cmd == "EXIT":
+            sys.exit(0)
         else:
             sys.stdout.write("INVALID\n")
     elif data in records:
-        conn.sendall((str(records[data])+"\n").encode())
+        conn.sendall((str(records[data])+"\n"))
         sys.stdout.write(f"resolve {data} to {records[data]}\n")
     else:
-        conn.sendall(str("NXDOMAIN\n").encode())
+        conn.sendall("NXDOMAIN\n")
         sys.stdout.write(f"resolve {data} to NXDOMAIN\n")
 
 def main(args: list[str]) -> None:
@@ -64,8 +63,7 @@ def main(args: list[str]) -> None:
     s.listen()
     while True:
         conn, addr = s.accept()
-        with conn:
-            handle_client(conn, records)
+        handle_client(conn, records)
 
 
 if __name__ == "__main__":

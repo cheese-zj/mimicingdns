@@ -40,10 +40,10 @@ def handle_client(conn, records):
             if hostname in records:
                 del records[hostname]
         elif cmd == "EXIT":
-            sys.stdout.write("Server shutting down...\n")
             sys.exit(0)
         else:
-            sys.stdout.write("INVALID\n")
+            #sys.stdout.write("INVALID\n")
+            pass
     elif data in records:
         conn.sendall(str(records[data]).encode())
         sys.stdout.write(f"resolve {data} to {records[data]}\n")
@@ -64,7 +64,7 @@ def main(args: list[str]) -> None:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(('127.0.0.1', THISPORT))
         s.listen()
-        sys.stdout.write(f"Server listening on port {s.getsockname()[1]}\n")
+        #sys.stdout.write(f"Server listening on port {s.getsockname()[1]}\n")
 
         while True:
             conn, addr = s.accept()

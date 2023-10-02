@@ -41,8 +41,7 @@ def handle_client(conn, records):
         elif cmd == "EXIT\n":
             sys.exit()
         else:
-            #sys.stdout.write("INVALID\n")
-            pass
+            sys.stdout.write("INVALID\n")
     elif data in records:
         conn.sendall((str(records[data])+"\n").encode())
         sys.stdout.write(f"resolve {data} to {records[data]}\n")

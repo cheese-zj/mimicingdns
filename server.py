@@ -28,20 +28,18 @@ def handle_client(conn, records):
         # Command Handling
         parts = data[1:].split(' ')
         cmd = parts[0]
-        if cmd == "ADD" and len(parts) == 3:
+        if cmd == "ADD\n" and len(parts) == 3:
             hostname, port = parts[1], parts[2]
             if hostname not in records and 0 <= int(port) <= 65535:
                 records[hostname] = int(port)
             elif hostname in records:
                 records[hostname] = int(port)
-        elif cmd == "DEL" and len(parts) == 2:
+        elif cmd == "DEL\n" and len(parts) == 2:
             hostname = parts[1]
             if hostname in records:
                 del records[hostname]
-        elif cmd == "EXIT":
-            print(flush=True)
+        elif cmd == "EXIT\n":
             sys.exit()
-            #test
         else:
             #sys.stdout.write("INVALID\n")
             pass

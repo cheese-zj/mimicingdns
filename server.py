@@ -30,7 +30,7 @@ def handle_client(conn, records):
         command = parts[0]
         if command == "ADD\n" and len(parts) == 3:
             hostname, port = parts[1], parts[2]
-            if hostname not in records and 0 <= int(port) <= 65535:
+            if hostname not in records and 1024 <= int(port) <= 65535:
                 records[hostname] = int(port)
             elif hostname in records:
                 records[hostname] = int(port)
@@ -59,6 +59,7 @@ def main(args: list[str]) -> None:
     records = load_records(config_file)
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(('127.0.0.1', THISPORT))
     s.listen()
     while True:

@@ -13,10 +13,13 @@ THISPORT = 1000;
 def load_records(config_file):
     records = {}
     with open(config_file, 'r') as f:
-        THISPORT = int(f.readline())
-        for line in f:
-            hostname, port = line.strip().split(',')
-            records[hostname] = int(port)
+        configdata=f.readlines()
+    global THISPORT
+    THISPORT = int(configdata[0])
+
+    for line in configdata[1:]:
+        hostname, port = line.strip().split(',')
+        records[hostname] = int(port)
     return records
 
 

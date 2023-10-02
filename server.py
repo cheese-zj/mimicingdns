@@ -45,7 +45,7 @@ def handle_client(conn, records):
             #sys.stdout.write("INVALID\n")
             pass
     elif data in records:
-        conn.sendall(str(records[data]+"\n").encode())
+        conn.sendall(str(records[data]).encode())
         sys.stdout.write(f"resolve {data} to {records[data]}\n")
     else:
         sys.stdout.write(f"resolve {data} to NXDOMAIN\n")

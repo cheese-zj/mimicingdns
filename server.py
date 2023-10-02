@@ -24,8 +24,7 @@ def load_records(config_file):
 
 
 def handle_client(conn, records):
-    data = conn.recv(1024).decode().strip()
-
+    data = conn.recv(THISPORT).decode().strip()
     if data.startswith("!"):
         # Command Handling
         parts = data[1:].split(' ')

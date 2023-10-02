@@ -39,7 +39,7 @@ def handle_client(conn, records):
             if hostname in records:
                 del records[hostname]
         elif cmd == "EXIT":
-            sys.exit(0)
+            exit()
         else:
             #sys.stdout.write("INVALID\n")
             pass

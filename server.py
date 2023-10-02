@@ -27,18 +27,18 @@ def handle_client(conn, records):
     if data.startswith("!"):
         # Command Handling
         parts = data[1:].split(' ')
-        cmd = parts[0]
-        if cmd == "ADD\n" and len(parts) == 3:
+        command = parts[0]
+        if command == "ADD\n" and len(parts) == 3:
             hostname, port = parts[1], parts[2]
             if hostname not in records and 0 <= int(port) <= 65535:
                 records[hostname] = int(port)
             elif hostname in records:
                 records[hostname] = int(port)
-        elif cmd == "DEL\n" and len(parts) == 2:
+        elif command == "DEL\n" and len(parts) == 2:
             hostname = parts[1]
             if hostname in records:
                 del records[hostname]
-        elif cmd == "EXIT\n":
+        elif command == "EXIT\n":
             sys.exit()
         else:
             sys.stdout.write("INVALID\n")
@@ -58,13 +58,13 @@ def main(args: list[str]) -> None:
     config_file = args[0]
     records = load_records(config_file)
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('127.0.0.1', THISPORT))
-        s.listen()
-        while True:
-            conn, addr = s.accept()
-            with conn:
-                handle_client(conn, records)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('127.0.0.1', THISPORT))
+    s.listen()
+    while True:
+        conn, addr = s.accept()
+        with conn:
+            handle_client(conn, records)
 
 
 if __name__ == "__main__":

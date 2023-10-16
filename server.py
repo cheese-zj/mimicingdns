@@ -16,6 +16,7 @@ def load_records(config_file):
             configdata=f.readlines()
     except FileNotFoundError():
         sys.stdout.write("INVALID CONFIGURATION")
+        sys.exit()
 
 
     global THISPORT

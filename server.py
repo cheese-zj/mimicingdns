@@ -11,8 +11,13 @@ THISPORT = 1000
 # Load records from config_file
 def load_records(config_file):
     records = dict()
-    with open(config_file, 'r') as f:
-        configdata=f.readlines()
+    try:
+        with open(config_file, 'r') as f:
+            configdata=f.readlines()
+    except FileNotFoundError():
+        sys.stdout.write("INVALID CONFIGURATION")
+
+
     global THISPORT
     THISPORT = int(configdata[0])
     for line in configdata[1:]:

@@ -14,7 +14,7 @@ def load_records(config_file):
     try:
         with open(config_file, 'r') as f:
             configdata=f.readlines()
-    except FileNotFoundError():
+    except (FileNotFoundError, TypeError):
         sys.stdout.write("INVALID CONFIGURATION")
         sys.exit()
 

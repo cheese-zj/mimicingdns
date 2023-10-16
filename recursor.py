@@ -7,7 +7,6 @@ import time
 
 
 def is_valid_domain(domain):
-    # A basic domain validation for this example; can be extended
     if any(len(part) == 0 for part in domain.split('.')):
         return False
     return True

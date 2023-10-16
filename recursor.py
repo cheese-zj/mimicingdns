@@ -20,7 +20,7 @@ def is_valid_domain(domain):
 def query_server(port, message, timeout):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.settimeout(timeout)
-        s.connect(('127.0.0.1', port))
+        s.connect(("", port))
         s.sendall(message.encode())
         data = s.recv(1024).decode()
     return data
@@ -45,10 +45,9 @@ def resolve_domain(root_port, domain, timeout):
 
     except (socket.timeout, ValueError):
         elapsed_time = time.time() - start_time
-        if elapsed_time > timeout:
-            return "NXDOMAIN"
-        else:
-            return "ERROR"
+        return "NXDOMAIN"
+        # else:
+        #     return "ERROR"
 
 
 def main(args: list[str]) -> None:
@@ -67,7 +66,7 @@ def main(args: list[str]) -> None:
 
     try:
         while True:
-            domain = input("Input a domain").strip()
+            domain = input().strip()
             if is_valid_domain(domain):
                 sys.stdout.write(resolve_domain(root_port, domain, timeout))
             else:

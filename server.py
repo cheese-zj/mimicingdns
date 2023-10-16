@@ -14,10 +14,9 @@ def load_records(config_file):
     try:
         with open(config_file, 'r') as f:
             configdata=f.readlines()
-    except (FileNotFoundError, TypeError, PermissionError, socket.timeout):
+    except (FileNotFoundError, TypeError):
         sys.stdout.write("INVALID CONFIGURATION\n")
         sys.exit(1)
-
 
     global THISPORT
     THISPORT = int(configdata[0])
@@ -67,12 +66,15 @@ def main(args: list[str]) -> None:
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # https://stackoverflow.com/questions/6380057/python-binding-socket-address-already-in-use
 
-    s.bind(('127.0.0.1', THISPORT))
-    s.listen()
-    while True:
-        conn, addr = s.accept()
-        handle_client(conn, records)
-
+    try:
+        s.bind(('127.0.0.1', THISPORT))
+        s.listen()
+        while True:
+            conn, addr = s.accept()
+            handle_client(conn, records)
+    except (PermissionError, socket.timeout):
+        sys.stdout.write("INVALID CONFIGURATION\n")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main(argv[1:])

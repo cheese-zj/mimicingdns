@@ -7,7 +7,7 @@ from sys import argv
 import sys
 import socket
 
-THISPORT = 1000;
+THISPORT = 1000
 # Load records from config_file
 def load_records(config_file):
     records = dict()
@@ -60,7 +60,7 @@ def main(args: list[str]) -> None:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     # https://stackoverflow.com/questions/6380057/python-binding-socket-address-already-in-use
-    #?
+
     s.bind(('127.0.0.1', THISPORT))
     s.listen()
     while True:

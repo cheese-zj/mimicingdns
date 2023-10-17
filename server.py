@@ -14,16 +14,17 @@ def load_records(config_file):
     try:
         with open(config_file, 'r') as f:
             configdata=f.readlines()
-            print(configdata)
-    except (FileNotFoundError, TypeError):
+            global THISPORT
+            THISPORT = int(configdata[0])
+            for line in configdata[1:]:
+                hostname, port = line.strip().split(',')
+                if all(s.isalnum() for s in hostname.split(".")):
+                    records[hostname] = int(port)
+                else:
+                    raise Exception
+    except (FileNotFoundError, TypeError, Exception):
         sys.stdout.write("INVALID CONFIGURATION\n")
         sys.exit(1)
-
-    global THISPORT
-    THISPORT = int(configdata[0])
-    for line in configdata[1:]:
-        hostname, port = line.strip().split(',')
-        records[hostname] = int(port)
     return records
 
 

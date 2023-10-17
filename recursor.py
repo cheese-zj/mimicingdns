@@ -28,19 +28,15 @@ def resolve_domain(domain, root_port, timeout):
     s.sendall(tld.encode() + b"\n")
     try:
         port = int(s.recv(1024).decode().strip())
+        s = socket.create_connection(('localhost', port), timeout)
     except ValueError:
         sys.stdout.write("INVALID\n")
         pass
-
-    # Connect to the TLD server
-    try:
-        s = socket.create_connection(('localhost', port), timeout)
     except EOFError:
         pass
     except (socket.timeout, ConnectionRefusedError):
         sys.stdout.write("FAILED TO CONNECT TO TLD\n")
         sys.exit(1)
-
 
     # Send the name to the TLD server
     s.sendall(name.encode() + b"\n")
@@ -89,7 +85,7 @@ def main():
             except EOFError:
                 pass
             except (socket.timeout, ConnectionRefusedError):
-                sys.stdout.write("FAILED TO CONNECT TO TLD\n")
+                sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
                 sys.exit(1)
 
 

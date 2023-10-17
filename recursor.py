@@ -42,11 +42,10 @@ def resolve_domain(root_port, domain, timeout):
             auth_port = int(auth_info)
         except ConnectionRefusedError:
             sys.stdout.write("FAILED TO CONNECT TO TLD\n")
-            sys.exit()
 
         try:
             final_info = query_server(auth_port, domain + '\n', timeout)
-            print("final_port" + final_info)
+            print("final_port: " + final_info)
             final_port = int(final_info)
             return str(final_port) + '\n'
         except ConnectionRefusedError:
@@ -55,8 +54,7 @@ def resolve_domain(root_port, domain, timeout):
     except socket.timeout:
         return "NXDOMAIN\n"
     except ValueError:
-        sys.stdout.write("FAILED TO CONNECT TO TLD\n")
-        sys.exit()
+        sys.stdout.write("INVALID\n")
 
 
 def main(args: list[str]) -> None:
@@ -76,6 +74,7 @@ def main(args: list[str]) -> None:
     try:
         while True:
             domain = input().strip()
+            print("user_input: " + domain)
             if is_valid_domain(domain):
                 sys.stdout.write(resolve_domain(root_port, domain, timeout))
             else:

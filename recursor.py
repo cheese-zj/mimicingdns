@@ -5,7 +5,7 @@ import time
 
 
 def is_valid_domain(domain):
-    return all(s.isalnum() for s in domain.split("."))
+    return ((all(s.isalnum() for s in domain.split("."))) and len(domain.split("."))>=3)
 
 
 def query_server(port, message, timeout):
@@ -54,7 +54,7 @@ def resolve_domain(root_port, domain, timeout):
     except socket.timeout:
         return "NXDOMAIN\n"
     except ValueError:
-        return "INVALID\n"
+        return "NXDOMAIN\n"
 
 
 def main(args: list[str]) -> None:

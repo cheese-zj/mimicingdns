@@ -5,7 +5,11 @@ import time
 
 
 def is_valid_domain(domain):
-    return ((all(s.isalnum() for s in domain.split("."))) and len(domain.split("."))>=3)
+    output = True;
+    output = output and domain.endswith("\n")
+    output = output and (all(s.isalnum() for s in domain.split(".")))
+    output = output and len(domain.split(".")) >= 3
+    return output
 
 
 def query_server(port, message, timeout):

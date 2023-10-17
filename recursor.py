@@ -45,7 +45,7 @@ def resolve_domain(root_port, domain, timeout):
 
         try:
             final_info = query_server(auth_port, domain + '\n', timeout)
-            print("final_port: " + final_info)
+            print("final_info: " + final_info)
             final_port = int(final_info)
             return str(final_port) + '\n'
         except ConnectionRefusedError:
@@ -54,7 +54,7 @@ def resolve_domain(root_port, domain, timeout):
     except socket.timeout:
         return "NXDOMAIN\n"
     except ValueError:
-        sys.stdout.write("INVALID\n")
+        return "INVALID\n"
 
 
 def main(args: list[str]) -> None:

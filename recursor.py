@@ -31,11 +31,12 @@ def resolve_domain(domain, root_port, timeout):
     # Connect to the TLD server
     try:
         s = socket.create_connection(('localhost', port), timeout)
+    except EOFError:
+        pass
     except (socket.timeout, ConnectionRefusedError):
         sys.stdout.write("FAILED TO CONNECT TO TLD\n")
         sys.exit(1)
-    except EOFError:
-        pass
+
 
     # Send the name to the TLD server
     s.sendall(name.encode() + b"\n")

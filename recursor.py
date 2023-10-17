@@ -37,7 +37,7 @@ def resolve_domain(root_port, domain, timeout):
 
     except (socket.timeout, ValueError):
         elapsed_time = time.time() - start_time
-        return "INVALID\n"
+        return "NXDOMAIN\n"
 
 
 def main(args: list[str]) -> None:
@@ -60,9 +60,7 @@ def main(args: list[str]) -> None:
             if is_valid_domain(domain):
                 sys.stdout.write(resolve_domain(root_port, domain, timeout))
             else:
-                sys.stdout.write("NXDOMAIN\n")
-    except EOFError:
-        pass
+                sys.stdout.write("INVALID\n")
     except ConnectionRefusedError:
         sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
         sys.exit()

@@ -60,7 +60,7 @@ def main(args: list[str]) -> None:
             if is_valid_domain(domain):
                 sys.stdout.write(resolve_domain(root_port, domain, timeout))
             else:
-                sys.stdout.write("INVALID\n")
+                sys.stdout.write("NXDOMAIN\n")
     except EOFError:
         pass
     except ConnectionRefusedError:

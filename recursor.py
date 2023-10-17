@@ -25,7 +25,9 @@ def resolve_domain(root_port, domain, timeout):
 
         # Try to connect to the root server
         try:
-            tld_port = int(query_server(port, message, timeout))
+            tld_info = query_server(port, message, timeout)
+            print("tld_info: "+tld_info)
+            tld_port = int(tld_info)
         except ConnectionRefusedError:
             sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
             sys.exit()
@@ -35,18 +37,25 @@ def resolve_domain(root_port, domain, timeout):
 
         # Try to connect to the TLD server
         try:
-            auth_port = int(query_server(tld_port, message, timeout))
+            auth_info = query_server(tld_port, message, timeout)
+            print("auth_info: "+auth_info)
+            auth_port = int(auth_info)
         except ConnectionRefusedError:
             sys.stdout.write("FAILED TO CONNECT TO TLD\n")
             sys.exit()
 
-        final_port = int(query_server(auth_port, domain + '\n', timeout))
-        return str(final_port) + '\n'
+        try:
+            final_info = query_server(auth_port, domain + '\n', timeout)
+            print(final_info)
+            final_port = int(final_info)
+            return str(final_port) + '\n'
+        except ConnectionRefusedError:
+            sys.stdout.write("FAILED TO CONNECT TO AUTH\n")
 
     except socket.timeout:
         return "NXDOMAIN\n"
     except ValueError:
-        sys.stdout.write("INVALID RESPONSE FROM SERVER\n")
+        sys.stdout.write("FAILED TO CONNECT TO TLD\n")
         sys.exit()
 
 

@@ -14,6 +14,7 @@ def load_records(config_file):
     try:
         with open(config_file, 'r') as f:
             configdata=f.readlines()
+            print(configdata)
     except (FileNotFoundError, TypeError):
         sys.stdout.write("INVALID CONFIGURATION\n")
         sys.exit(1)
@@ -69,7 +70,7 @@ def main(args: list[str]) -> None:
     try:
         s.bind(("", THISPORT))
         s.listen()
-    except (PermissionError, socket.timeout, OSError):
+    except (PermissionError, socket.timeout):
         sys.stdout.write("INVALID CONFIGURATION\n")
         sys.exit(1)
 

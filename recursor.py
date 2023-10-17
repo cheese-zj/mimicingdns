@@ -6,69 +6,72 @@ import socket
 import time
 
 
-def is_valid_domain(domain):
-    if all(s.isalnum() for s in domain.split(".")):
-        return True
-    return False
+def resolve_domain(domain, root_port, timeout):
+    # Split the domain into parts
+    parts = domain.split('.')
+    tld = parts[-2] if len(parts) > 1 else None
+    name = parts[-1]
 
+    # Create a socket and connect to the root server
+    s = socket.create_connection(('localhost', root_port), timeout)
 
-def query_server(port, message, timeout):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(timeout)
-        s.connect(("", port))
-        s.sendall(message.encode())
-        data = s.recv(port).decode()
-        sys.stdout.write(data)
-    return data
-
-
-def resolve_domain(root_port, domain, timeout):
+    # Start the timer
     start_time = time.time()
+
+    # Send the TLD to the root server
+    s.sendall(tld.encode() + b"\n")
+    port = int(s.recv(1024).decode().strip())
+
+    # Connect to the TLD server
     try:
-        port = root_port
-        message = domain.split('.')[-1] + '\n'
-        tld_port = int(query_server(port, message, timeout))
+        s = socket.create_connection(('localhost', port), timeout)
+    except ConnectionRefusedError:
+        sys.stdout.write("FAILED TO CONNECT TO TLD")
+        sys.exit(1)
 
-        domain_parts = domain.split('.')
-        message = '.'.join(domain_parts[-2:]) + '\n'
-        auth_port = int(query_server(tld_port, message, timeout))
+    # Send the name to the TLD server
+    s.sendall(name.encode() + b"\n")
+    port = int(s.recv(1024).decode().strip())
 
-        final_port = int(query_server(auth_port, domain + '\n', timeout))
-        return str(final_port) + '\n'
+    # End the timer
+    elapsed_time = time.time() - start_time
 
-    except socket.timeout:
-        elapsed_time = time.time() - start_time
-        return "INVALID\n"
-    except ValueError:
-        return "NXDOMAIN\n"
+    # Check for timeout
+    if elapsed_time > timeout:
+        sys.stdout.write("NXDOMAIN\n")
+        return
+
+    # Print the final result
+    print(f"{port}\n")
 
 
-def main(args: list[str]) -> None:
-    if len(args) != 2:
-        sys.stdout.write("INVALID ARGUMENTS\n")
-        sys.exit()
+def main():
+    # Check command-line arguments
+    if len(sys.argv) != 3:
+        print("INVALID ARGUMENTS\n")
+        sys.exit(1)
 
-    try:
-        root_port = int(args[0])
-        if not (0 <= root_port <= 65535):
-            raise ValueError
-        timeout = float(args[1])
-    except ValueError:
-        sys.stdout.write("INVALID ARGUMENTS\n")
-        sys.exit()
+    root_port = int(sys.argv[1])
+    timeout = float(sys.argv[2])  # Can be an integer or float
 
-    try:
-        while True:
-            domain = input().strip()
-            if is_valid_domain(domain):
-                sys.stdout.write(resolve_domain(root_port, domain, timeout))
-            else:
-                sys.stdout.write("INVALID\n")
-    except EOFError:
-        pass
-    # except ConnectionRefusedError:
-    #     sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
-    #     sys.exit()
+    # Infinite loop to continuously take user input
+    while True:
+        domain = input().strip()
+        # if not domain:  # If the user pressed just Enter, continue
+        #     continue
+        # elif domain == '\x04':  # Ctrl+D
+        #     break
+        # else:
+            # Validate the domain
+        if not all(part.isalnum() for part in domain.split('.')):
+            print("INVALID\n")
+        else:
+            try:
+                resolve_domain(domain, root_port, timeout)
+            except (socket.timeout, ConnectionRefusedError):
+                print("FAILED TO CONNECT TO ROOT\n")
+
 
 if __name__ == "__main__":
-    main(argv[1:])
+    main()
+

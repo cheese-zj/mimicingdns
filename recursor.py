@@ -18,6 +18,7 @@ def query_server(port, message, timeout):
         s.connect(("", port))
         s.sendall(message.encode())
         data = s.recv(port).decode()
+        sys.stdout.write(data)
     return data
 
 
@@ -65,9 +66,9 @@ def main(args: list[str]) -> None:
                 sys.stdout.write("INVALID\n")
     except EOFError:
         pass
-    except ConnectionRefusedError:
-        sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
-        sys.exit()
+    # except ConnectionRefusedError:
+    #     sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
+    #     sys.exit()
 
 if __name__ == "__main__":
     main(argv[1:])

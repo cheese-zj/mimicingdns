@@ -17,7 +17,7 @@ def query_server(port, message, timeout):
         s.settimeout(timeout)
         s.connect(("", port))
         s.sendall(message.encode())
-        data = s.recv(1024).decode()
+        data = s.recv(port).decode()
     return data
 
 
@@ -35,8 +35,10 @@ def resolve_domain(root_port, domain, timeout):
         final_port = int(query_server(auth_port, domain + '\n', timeout))
         return str(final_port) + '\n'
 
-    except (socket.timeout, ValueError):
+    except socket.timeout:
         elapsed_time = time.time() - start_time
+        return "INVALID\n"
+    except ValueError:
         return "NXDOMAIN\n"
 
 

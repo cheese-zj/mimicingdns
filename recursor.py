@@ -7,9 +7,9 @@ import time
 
 
 def is_valid_domain(domain):
-    if any(len(part) == 0 for part in domain.split('.')):
-        return False
-    return True
+    if all(s.isalnum() for s in domain.split(".")):
+        return True
+    return False
 
 
 def query_server(port, message, timeout):
@@ -61,6 +61,8 @@ def main(args: list[str]) -> None:
                 sys.stdout.write(resolve_domain(root_port, domain, timeout))
             else:
                 sys.stdout.write("INVALID\n")
+    except EOFError:
+        pass
     except ConnectionRefusedError:
         sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
         sys.exit()

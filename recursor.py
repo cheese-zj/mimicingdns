@@ -26,7 +26,11 @@ def resolve_domain(domain, root_port, timeout):
 
     # Send the TLD to the root server
     s.sendall(tld.encode() + b"\n")
-    port = int(s.recv(1024).decode().strip())
+    try:
+        port = int(s.recv(1024).decode().strip())
+    except ValueError:
+        sys.stdout.write("INVALID\n")
+        pass
 
     # Connect to the TLD server
     try:
@@ -40,8 +44,12 @@ def resolve_domain(domain, root_port, timeout):
 
     # Send the name to the TLD server
     s.sendall(name.encode() + b"\n")
-    data = s.recv(1024).decode().strip()
-    port = int(data)
+    try:
+        #  data = s.recv(1024).decode().strip()
+        port = int(s.recv(1024).decode().strip())
+    except ValueError:
+        sys.stdout.write("INVALID\n")
+        pass
 
     # End the timer
     elapsed_time = time.time() - start_time

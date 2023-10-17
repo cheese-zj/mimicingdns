@@ -37,7 +37,7 @@ def resolve_domain(root_port, domain, timeout):
 
     except (socket.timeout, ValueError):
         elapsed_time = time.time() - start_time
-        return "NXDOMAIN\n"
+        return "INVALID\n"
 
 
 def main(args: list[str]) -> None:

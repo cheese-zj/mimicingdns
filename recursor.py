@@ -46,8 +46,8 @@ def resolve_domain(root_port, domain, timeout):
 
         try:
             final_info = query_server(auth_port, domain + '\n', timeout)
-            print(final_info)
-            final_port = int("final_port" + final_info)
+            print("final_port" + final_info)
+            final_port = int(final_info)
             return str(final_port) + '\n'
         except ConnectionRefusedError:
             sys.stdout.write("FAILED TO CONNECT TO AUTH\n")

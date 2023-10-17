@@ -67,14 +67,15 @@ def main(args: list[str]) -> None:
     # https://stackoverflow.com/questions/6380057/python-binding-socket-address-already-in-use
 
     try:
-        s.bind(('127.0.0.1', THISPORT))
+        s.bind(("", THISPORT))
         s.listen()
-        while True:
-            conn, addr = s.accept()
-            handle_client(conn, records)
-    except (PermissionError, socket.timeout):
+    except (PermissionError, socket.timeout, OSError):
         sys.stdout.write("INVALID CONFIGURATION\n")
         sys.exit(1)
+
+    while True:
+        conn, addr = s.accept()
+        handle_client(conn, records)
 
 if __name__ == "__main__":
     main(argv[1:])

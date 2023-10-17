@@ -13,7 +13,13 @@ def resolve_domain(domain, root_port, timeout):
     name = parts[-1]
 
     # Create a socket and connect to the root server
-    s = socket.create_connection(('localhost', root_port), timeout)
+    try:
+        s = socket.create_connection(('localhost', root_port), timeout)
+    except (socket.timeout, ConnectionRefusedError):
+        sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
+        sys.exit(1)
+    except EOFError:
+        pass
 
     # Start the timer
     start_time = time.time()
@@ -25,9 +31,11 @@ def resolve_domain(domain, root_port, timeout):
     # Connect to the TLD server
     try:
         s = socket.create_connection(('localhost', port), timeout)
-    except ConnectionRefusedError:
-        sys.stdout.write("FAILED TO CONNECT TO TLD")
+    except (socket.timeout, ConnectionRefusedError):
+        sys.stdout.write("FAILED TO CONNECT TO TLD\n")
         sys.exit(1)
+    except EOFError:
+        pass
 
     # Send the name to the TLD server
     s.sendall(name.encode() + b"\n")
@@ -48,7 +56,7 @@ def resolve_domain(domain, root_port, timeout):
 def main():
     # Check command-line arguments
     if len(sys.argv) != 3:
-        print("INVALID ARGUMENTS\n")
+        sys.stdout.write("INVALID ARGUMENTS\n")
         sys.exit(1)
 
     root_port = int(sys.argv[1])
@@ -64,12 +72,10 @@ def main():
         # else:
             # Validate the domain
         if not all(part.isalnum() for part in domain.split('.')):
-            print("INVALID\n")
+            sys.stdout.write("INVALID\n")
         else:
-            try:
-                resolve_domain(domain, root_port, timeout)
-            except (socket.timeout, ConnectionRefusedError):
-                print("FAILED TO CONNECT TO ROOT\n")
+            resolve_domain(domain, root_port, timeout)
+
 
 
 if __name__ == "__main__":

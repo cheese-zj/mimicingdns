@@ -8,11 +8,8 @@ def is_valid_domain(domain):
     if not domain:
         return False
 
-    if not domain.endswith("\n"):
-        return False
-
     # Split by dots
-    parts = domain.strip().split('.')
+    parts = domain.split('.')
 
     # Ensure there are at least 3 parts (C, B, A)
     if len(parts) < 3:

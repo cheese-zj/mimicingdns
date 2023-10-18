@@ -5,11 +5,27 @@ import time
 
 
 def is_valid_domain(domain):
-    output = True;
-    output = output and domain.endswith("\n")
-    output = output and (all(s.isalnum() for s in domain.split(".")))
-    output = output and len(domain.split(".")) >= 3
-    return output
+    if not domain:
+        return False
+
+    # Split by dots
+    parts = domain.split('.')
+
+    # Ensure there are at least 3 parts (C, B, A)
+    if len(parts) < 3:
+        return False
+
+    # Validate A and B
+    if not all(all(c.isalnum() or c == '-' for c in part) for part in parts[-2:]):
+        return False
+    # Validate C
+    C = ".".join(parts[:-2])
+    if C.startswith('.') or C.endswith('.'):
+        return False
+    if not all(c.isalnum() or c in ['-', '.'] for c in C):
+        return False
+    return True
+
 
 
 def query_server(port, message, timeout):

@@ -48,10 +48,10 @@ def handle_client(conn, records):
         else:
             print("INVALID")
     elif data in records:
-        conn.sendall((str(records[data])+"\n").encode())
+        conn.sendall((str(records[data])).encode())
         print(f"resolve {data} to {records[data]}")
     else:
-        conn.sendall("NXDOMAIN\n".encode())
+        conn.sendall("NXDOMAIN".encode())
         print(f"resolve {data} to NXDOMAIN")
 
 def main(args: list[str]) -> None:

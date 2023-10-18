@@ -69,6 +69,7 @@ def main(args: list[str]) -> None:
 
     for line in master_data:
         parts = line.split(",")
+        print(parts)
         full_domain = parts[0]
         port = parts[1]
         search_for_eq(full_domain, key, port)

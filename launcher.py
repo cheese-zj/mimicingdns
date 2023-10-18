@@ -12,8 +12,6 @@ def main(args: list[str]) -> None:
         print("INVALID ARGUMENTS")
         exit()
     master_file = str(args[0])
-    master_data = []
-    master_port = None
     dir_of_single_files = str(args[1])
     if Path(dir_of_single_files).is_dir() is False:
         print("NON-WRITABLE SINGLE DIR")

@@ -33,7 +33,6 @@ def main(args: list[str]) -> None:
                 #print(port)
                 if not 1024 <= port <= 65535:
                     raise Exception
-            print("config check done")
 
         roots = set()
         auth = dict()
@@ -68,7 +67,6 @@ def main(args: list[str]) -> None:
         # Find all files that start with 'tld-'
         matching_files = list(search_dir.glob("tld-*"))
         for file in matching_files:
-            print(file)
             with open(file, "r") as tld_f:
                 data = tld_f.readlines()[1:]
                 for line in data:

@@ -53,6 +53,7 @@ def main(args: list[str]) -> None:
 
     key = master_data[0]
     master_data = master_data[1:]
+    viewed = set()
 
     def search_for_eq(match, port_key, og_key):
         for file in matching_files:
@@ -67,6 +68,7 @@ def main(args: list[str]) -> None:
                             exit()
                         search_for_eq(match, parts[1], og_key)
 
+    print(key)
     for line in master_data:
         parts = line.split(",")
         print(parts)

@@ -55,26 +55,26 @@ def main(args: list[str]) -> None:
     master_data = master_data[1:]
     viewed = set()
 
-    def search_for_eq(match, port_key, og_key):
+    def search_for_eq(match, port_key, og_key, view_hist):
         for file in matching_files:
             with open(file,"r") as f:
                 temp = f.readlines()
-                if temp[0] == port_key:
+                if temp[0] == port_key and temp[0] not in view_hist:
+                    view_hist.add(port_key)
                     temp = temp[1:]
                     for line in temp:
                         parts = line.split(",")
                         if parts[0] == match and parts[1] == og_key:
                             print("eq")
                             exit()
-                        search_for_eq(match, parts[1], og_key)
+                        search_for_eq(match, parts[1], og_key, view_hist)
 
-    print(key)
+    #  print(key)
     for line in master_data:
         parts = line.split(",")
-        print(parts)
         full_domain = parts[0]
         port = parts[1]
-        search_for_eq(full_domain, key, port)
+        search_for_eq(full_domain, key, port, set())
 
     print("neq")
     exit()

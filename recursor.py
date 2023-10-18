@@ -8,6 +8,9 @@ def is_valid_domain(domain):
     if not domain:
         return False
 
+    if domain.encode("\n"):
+        return False
+
     # Split by dots
     parts = domain.split('.')
 
@@ -93,7 +96,7 @@ def main(args: list[str]) -> None:
 
     try:
         while True:
-            domain = input().strip()
+            domain = input()
             print("user_input: " + domain)
             if is_valid_domain(domain):
                 sys.stdout.write(resolve_domain(root_port, domain, timeout))

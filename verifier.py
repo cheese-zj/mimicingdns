@@ -7,7 +7,10 @@ from sys import argv
 
 
 def main(args: list[str]) -> None:
-    # TODO
+    if len(args) != 2:
+        print("INVALID ARGUMENTS")
+        exit()
+
     pass
 
 

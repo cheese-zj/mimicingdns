@@ -1,11 +1,8 @@
-"""
-Write code for your launcher here.
-
-You may import library modules allowed by the specs, as well as your own other modules.
-"""
 from sys import argv
 from recursor import is_valid_domain
 from pathlib import Path
+
+
 
 def main(args: list[str]) -> None:
     if len(args) != 2:
@@ -32,10 +29,6 @@ def main(args: list[str]) -> None:
                 #print(port)
                 if not 1024 <= port <= 65535:
                     raise Exception
-
-    except (Exception, ValueError):
-        print("INVALID MASTER")
-        exit(1)
 
         roots = set()
         auth = dict()
@@ -91,6 +84,12 @@ def main(args: list[str]) -> None:
                             if item.split(".")[-2]+"."+item.split(".")[-1] == line[0]:
                                 auth_f.write(f"{item},{auth[item]}\n")
 
+
+
+
+    except (Exception, ValueError):
+        print("INVALID MASTER")
+        exit(1)
     pass
 
 

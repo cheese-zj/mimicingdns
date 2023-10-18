@@ -8,6 +8,7 @@ from recursor import is_valid_domain
 from pathlib import Path
 
 
+
 def main(args: list[str]) -> None:
     if len(args) != 2:
         print("INVALID ARGUMENTS")
@@ -36,19 +37,29 @@ def main(args: list[str]) -> None:
 
         roots = set()
         auth = dict()
+        used_port = set()
 
         port_pointer = master_port
+
+        def pointer_mover():
+            pointer = port_pointer
+            pointer += 1
+            while pointer in used_port:
+                pointer += 1
+            used_port.add(pointer)
+            return pointer
 
         for line in master_data:
             reflect = line.split(",")
             auth[reflect[0]]=int(reflect[1].strip())
+            used_port.add(int(reflect[1].strip()))
             roots.add(reflect[0].split(".")[-1])  # add roots eg "com" into roots set
         with open(dir_of_single_files+"/root.conf", "w") as root_f:
             root_f.write(str(port_pointer)+"\n")
-            port_pointer += 1
+            port_pointer = pointer_mover()
             for root in roots:
                 root_f.write(root+","+str(port_pointer)+"\n")
-                port_pointer += 1
+                port_pointer = pointer_mover()
 
         with open(dir_of_single_files + "/root.conf", "r") as root_f:
             data = root_f.readlines()[1:]
@@ -61,7 +72,7 @@ def main(args: list[str]) -> None:
                             parts = item.split(".")
                             domain = f"{parts[-2]}.{parts[-1]}"
                             tld_f.write(f"{domain},{port_pointer}\n")
-                            port_pointer += 1
+                            port_pointer = pointer_mover()
 
         search_dir = Path(dir_of_single_files)
         # Find all files that start with 'tld-'

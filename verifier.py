@@ -46,10 +46,11 @@ def main(args: list[str]) -> None:
         with open(file, "r") as f:
             data = f.readlines()[1:]
             for line in data:
-                parts = line.split(",")[0]
-                if not all(c.isalnum() or c == '-' for c in part for part in parts):
-                    print("invalid single")
-                    exit(1)
+                parts = line.split(",")[0].split(".")
+                for part in parts:
+                    if not all(c.isalnum() or c == '-' for c in part):
+                        print("invalid single")
+                        exit(1)
 
 
     pass

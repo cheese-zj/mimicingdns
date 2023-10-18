@@ -7,13 +7,13 @@ from sys import argv
 from recursor import is_valid_domain
 from pathlib import Path
 
-
-
 def main(args: list[str]) -> None:
     if len(args) != 2:
         print("INVALID ARGUMENTS")
         exit()
     master_file = str(args[0])
+    master_data = []
+    master_port = None
     dir_of_single_files = str(args[1])
     if Path(dir_of_single_files).is_dir() is False:
         print("NON-WRITABLE SINGLE DIR")
@@ -34,6 +34,10 @@ def main(args: list[str]) -> None:
                 #print(port)
                 if not 1024 <= port <= 65535:
                     raise Exception
+
+    except (Exception, ValueError):
+        print("INVALID MASTER")
+        exit(1)
 
         roots = set()
         auth = dict()
@@ -89,12 +93,6 @@ def main(args: list[str]) -> None:
                             if item.split(".")[-2]+"."+item.split(".")[-1] == line[0]:
                                 auth_f.write(f"{item},{auth[item]}\n")
 
-
-
-
-    except (Exception, ValueError):
-        print("INVALID MASTER")
-        exit(1)
     pass
 
 

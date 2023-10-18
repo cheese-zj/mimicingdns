@@ -9,6 +9,9 @@ from recursor import is_valid_domain
 from pathlib import Path
 
 
+def part_check():
+
+
 def main(args: list[str]) -> None:
     if len(args) != 2:
         print("invalid arguments")
@@ -37,7 +40,22 @@ def main(args: list[str]) -> None:
         print("invalid master")
         exit(1)
 
+    search_dir = Path(dir_of_single_files)
+    matching_files = list(search_dir.glob("*.conf"))
+
+    # Single file validation:
+    for file in matching_files:
+        with open(file, "r") as f:
+            data = f.readlines()[1:]
+            for line in data:
+                parts = line.split(",")[0]
+                if not all(c.isalnum() or c == '-' for c in part for part in parts):
+                    print("invalid single")
+                    exit(1)
+
+
     pass
+
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ def main(args: list[str]) -> None:
                     raise Exception
 
     except (Exception, ValueError):
-        sys.stdout.write("INVALID MASTER")
+        sys.stdout.write("INVALID MASTER\n")
         sys.exit(1)
 
     dir_of_single_files = str(args[2])

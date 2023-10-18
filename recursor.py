@@ -1,5 +1,5 @@
 from sys import argv
-import sys
+
 import socket
 import time
 
@@ -49,8 +49,8 @@ def resolve_domain(root_port, domain, timeout):
             #print("tld_info: "+tld_info)
             tld_port = int(tld_info)
         except ConnectionRefusedError:
-            sys.stdout.write("FAILED TO CONNECT TO ROOT\n")
-            sys.exit(1)
+            print("FAILED TO CONNECT TO ROOT")
+            exit(1)
 
         domain_parts = domain.split('.')
         message = '.'.join(domain_parts[-2:]) + '\n'
@@ -61,8 +61,8 @@ def resolve_domain(root_port, domain, timeout):
             #print("auth_info: "+auth_info)
             auth_port = int(auth_info)
         except ConnectionRefusedError:
-            sys.stdout.write("FAILED TO CONNECT TO TLD\n")
-            sys.exit(1)
+            print("FAILED TO CONNECT TO TLD")
+            exit(1)
 
         try:
             final_info = query_server(auth_port, domain + '\n', timeout)
@@ -70,19 +70,19 @@ def resolve_domain(root_port, domain, timeout):
             final_port = int(final_info)
             return str(final_port) + '\n'
         except ConnectionRefusedError:
-            sys.stdout.write("FAILED TO CONNECT TO AUTH\n")
-            sys.exit(1)
+            print("FAILED TO CONNECT TO AUTH")
+            exit(1)
 
     except socket.timeout:
-        return "NXDOMAIN\n"
+        return "NXDOMAIN"
     except ValueError:
-        return "NXDOMAIN\n"
+        return "NXDOMAIN"
 
 
 def main(args: list[str]) -> None:
     if len(args) != 2:
-        sys.stdout.write("INVALID ARGUMENTS\n")
-        sys.exit()
+        print("INVALID ARGUMENTS")
+        exit()
 
     try:
         root_port = int(args[0])
@@ -90,17 +90,17 @@ def main(args: list[str]) -> None:
             raise ValueError
         timeout = float(args[1])
     except ValueError:
-        sys.stdout.write("INVALID ARGUMENTS\n")
-        sys.exit()
+        print("INVALID ARGUMENTS")
+        exit()
 
     try:
         while True:
             domain = input()
             #print("user_input: " + domain)
             if is_valid_domain(domain):
-                sys.stdout.write(resolve_domain(root_port, domain, timeout))
+                print(resolve_domain(root_port, domain, timeout))
             else:
-                sys.stdout.write("INVALID\n")
+                print("INVALID")
     except EOFError:
         pass
 

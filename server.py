@@ -4,7 +4,6 @@ Write code for your server here.
 You may import library modules allowed by the specs, as well as your own other modules.
 """
 from sys import argv
-import sys
 import socket
 
 THISPORT = 1000
@@ -23,8 +22,8 @@ def load_records(config_file):
                 else:
                     raise Exception
     except (FileNotFoundError, TypeError, Exception):
-        sys.stdout.write("INVALID CONFIGURATION\n")
-        sys.exit(1)
+        print("INVALID CONFIGURATION")
+        exit(1)
     return records
 
 
@@ -45,21 +44,21 @@ def handle_client(conn, records):
             if hostname in records:
                 del records[hostname]
         elif cmd == "EXIT":
-            sys.exit(0)
+            exit(0)
         else:
-            sys.stdout.write("INVALID\n")
+            print("INVALID")
     elif data in records:
         conn.sendall((str(records[data])+"\n").encode())
-        sys.stdout.write(f"resolve {data} to {records[data]}\n")
+        print(f"resolve {data} to {records[data]}")
     else:
         conn.sendall("NXDOMAIN\n".encode())
-        sys.stdout.write(f"resolve {data} to NXDOMAIN\n")
+        print(f"resolve {data} to NXDOMAIN")
 
 def main(args: list[str]) -> None:
 
     if len(args) != 1:
-        sys.stdout.write("INVALID ARGUMENTS\n")
-        sys.exit()
+        print("INVALID ARGUMENTS")
+        exit()
 
     config_file = args[0]
     records = load_records(config_file)
@@ -72,8 +71,8 @@ def main(args: list[str]) -> None:
         s.bind(("", THISPORT))
         s.listen()
     except (PermissionError, socket.timeout):
-        sys.stdout.write("INVALID CONFIGURATION\n")
-        sys.exit(1)
+        print("INVALID CONFIGURATION")
+        exit(1)
 
     while True:
         conn, addr = s.accept()

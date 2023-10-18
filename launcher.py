@@ -4,13 +4,12 @@ Write code for your launcher here.
 You may import library modules allowed by the specs, as well as your own other modules.
 """
 from sys import argv
-import sys
 from recursor import is_valid_domain
 
 def main(args: list[str]) -> None:
     if len(args) != 2:
-        sys.stdout.write("INVALID ARGUMENTS\n")
-        sys.exit()
+        print("INVALID ARGUMENTS")
+        exit()
     master_file = str(args[1])
     try:
         with open(master_file, "r") as f:
@@ -23,8 +22,8 @@ def main(args: list[str]) -> None:
                     raise Exception
 
     except (Exception, ValueError):
-        sys.stdout.write("INVALID MASTER\n")
-        sys.exit(1)
+        print("INVALID MASTER")
+        exit(1)
 
     dir_of_single_files = str(args[2])
     pass

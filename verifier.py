@@ -9,8 +9,6 @@ from recursor import is_valid_domain
 from pathlib import Path
 
 
-def part_check():
-
 
 def main(args: list[str]) -> None:
     if len(args) != 2:

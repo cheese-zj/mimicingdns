@@ -71,10 +71,11 @@ def main(args: list[str]) -> None:
                             return True
                         search_for_eq(match, parts[1], og_key, view_hist)
 
-    #  print(key)
+    print(key)
 
     result = True
     for line in master_data:
+        print(line)
         parts = line.split(",")
         full_domain = parts[0]
         port = parts[1]

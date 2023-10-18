@@ -61,9 +61,8 @@ def main(args: list[str]) -> None:
                 temp = f.readlines()
                 if temp[0] == port_key:
                     if temp[0] in view_hist:
-                        print("neq")
-                        print(view_hist)
-                        exit()
+                        print("recursive inf in viewing")
+                        return False
                     view_hist.add(port_key)
                     temp = temp[1:]
                     for line in temp:

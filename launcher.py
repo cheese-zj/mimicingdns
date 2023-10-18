@@ -5,12 +5,17 @@ You may import library modules allowed by the specs, as well as your own other m
 """
 from sys import argv
 from recursor import is_valid_domain
+from pathlib import Path
 
 def main(args: list[str]) -> None:
     if len(args) != 2:
         print("INVALID ARGUMENTS")
         exit()
     master_file = str(args[1])
+    dir_of_single_files = Path(str(args[2]))
+    if not dir_of_single_files.is_dir():
+        print("NON-WRITABLE SINGLE DIR")
+        exit(1)
     try:
         with open(master_file, "r") as f:
             master_data = f.readlines()
@@ -24,8 +29,6 @@ def main(args: list[str]) -> None:
     except (Exception, ValueError):
         print("INVALID MASTER")
         exit(1)
-
-    dir_of_single_files = str(args[2])
     pass
 
 

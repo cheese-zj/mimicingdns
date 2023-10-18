@@ -25,8 +25,7 @@ def main(args: list[str]) -> None:
             master_port = int(master_data[0])
             if not 1024 <= master_port <= 65535:
                 raise Exception
-            master_data = master_data[1:]
-            for line in master_data:
+            for line in master_data[1:]:
                 domain = line.split(",")[0]
                 if not is_valid_domain(domain):
                     raise Exception
@@ -52,6 +51,30 @@ def main(args: list[str]) -> None:
                         print("invalid single")
                         exit(1)
 
+    key = master_data[0]
+    master_data = master_data[1:]
+
+    def search_for_eq(match, port_key, og_key):
+        for file in matching_files:
+            with open(file,"r") as f:
+                temp = f.readlines()
+                if temp[0] == port_key:
+                    temp = temp[1:]
+                    for line in temp:
+                        parts = line.split(",")
+                        if parts[0] == match and parts[1] == og_key:
+                            print("eq")
+                            exit()
+                        search_for_eq(match, parts[1], og_key)
+
+    for line in master_data:
+        parts = line.split(",")
+        full_domain = parts[0]
+        port = parts[1]
+        search_for_eq(full_domain, key, port)
+
+    print("neq")
+    exit()
 
     pass
 

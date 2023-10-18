@@ -96,7 +96,7 @@ def main(args: list[str]) -> None:
     try:
         while True:
             domain = input()
-            print("user_input: " + domain)
+            #print("user_input: " + domain)
             if is_valid_domain(domain):
                 sys.stdout.write(resolve_domain(root_port, domain, timeout))
             else:

@@ -61,24 +61,34 @@ def main(args: list[str]) -> None:
                 temp = f.readlines()
                 if temp[0] == port_key:
                     if temp[0] in view_hist:
-                        print("recursive inf in viewing")
-                        return False
+                        print("neq")
+                        exit()
                     view_hist.add(port_key)
                     temp = temp[1:]
+                    #print(temp)
                     for line in temp:
                         parts = line.split(",")
-                        if parts[0] == match and parts[1] == og_key:
+                        # print("parts:")
+                        # print(parts)
+                        # print(og_key.strip())
+                        # print(parts[1].strip())
+                        # print(parts[1].strip()==og_key.strip())
+                        if parts[0] == match and parts[1].strip() == og_key.strip():
                             return True
-                        search_for_eq(match, parts[1], og_key, view_hist)
+                        if search_for_eq(match, parts[1], og_key, view_hist):
+                            return True
 
-    print(key)
+    # print(key)
 
     result = True
     for line in master_data:
-        print(line)
+        # print("full_domain:")
+        # print(line)
         parts = line.split(",")
         full_domain = parts[0]
         port = parts[1]
+        this_round = search_for_eq(full_domain, key, port, set())
+        # print(this_round)
         result = result and search_for_eq(full_domain, key, port, set())
 
     if result:

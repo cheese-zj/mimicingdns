@@ -51,9 +51,7 @@ def main(args: list[str]) -> None:
                         print("invalid single")
                         exit(1)
 
-    key = master_data[0]
     master_data = master_data[1:]
-    viewed = set()
 
     def search_for_eq(match, port_key, og_key):
         for file in matching_files:
@@ -91,8 +89,8 @@ def main(args: list[str]) -> None:
 
     result = True
     for line in master_data:
-        print("full_domain:")
-        print(line.strip())
+        # print("full_domain:")
+        # print(line.strip())
         parts = line.split(",")
         full_domain = parts[0]
         port = parts[1]

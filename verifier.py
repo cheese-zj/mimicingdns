@@ -55,41 +55,44 @@ def main(args: list[str]) -> None:
     master_data = master_data[1:]
     viewed = set()
 
-    def search_for_eq(match, port_key, og_key, view_hist):
+    def search_for_eq(match, port_key, og_key):
         for file in matching_files:
             with open(file,"r") as f:
                 temp = f.readlines()
-                if temp[0] == port_key:
-                    if temp[0] in view_hist:
-                        print("neq")
-                        exit()
-                    view_hist.add(port_key)
+                #print(port_key)
+                if temp[0] == port_key or port_key is None:
                     temp = temp[1:]
                     #print(temp)
                     for line in temp:
                         parts = line.split(",")
+                        # print("port_key for now")
+                        # print(port_key.strip())
                         # print("parts:")
                         # print(parts)
+                        # print()
                         # print(og_key.strip())
                         # print(parts[1].strip())
                         # print(parts[1].strip()==og_key.strip())
                         if parts[0] == match and parts[1].strip() == og_key.strip():
                             return True
-                        if search_for_eq(match, parts[1], og_key, view_hist):
+                        if search_for_eq(match, parts[1], og_key):
                             return True
+        #return False
 
     # print(key)
 
     result = True
     for line in master_data:
         # print("full_domain:")
-        # print(line)
+        # print(line.strip())
         parts = line.split(",")
         full_domain = parts[0]
         port = parts[1]
-        this_round = search_for_eq(full_domain, key, port, set())
-        # print(this_round)
-        result = result and search_for_eq(full_domain, key, port, set())
+        try:
+            result = result and search_for_eq(full_domain, None, port)
+        except OSError:
+            print("neq")
+            exit()
 
     if result:
         print("eq")

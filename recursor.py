@@ -1,5 +1,4 @@
 from sys import argv
-
 import socket
 import time
 
@@ -27,7 +26,6 @@ def is_valid_domain(domain):
     return True
 
 
-
 def query_server(port, message, timeout):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.settimeout(timeout)
@@ -46,7 +44,6 @@ def resolve_domain(root_port, domain, timeout):
         # Try to connect to the root server
         try:
             tld_info = query_server(port, message, timeout)
-            #print("tld_info: "+tld_info)
             tld_port = int(tld_info)
         except ConnectionRefusedError:
             print("FAILED TO CONNECT TO ROOT")
@@ -58,7 +55,6 @@ def resolve_domain(root_port, domain, timeout):
         # Try to connect to the TLD server
         try:
             auth_info = query_server(tld_port, message, timeout)
-            #print("auth_info: "+auth_info)
             auth_port = int(auth_info)
         except ConnectionRefusedError:
             print("FAILED TO CONNECT TO TLD")
@@ -66,16 +62,13 @@ def resolve_domain(root_port, domain, timeout):
 
         try:
             final_info = query_server(auth_port, domain + '\n', timeout)
-            #print("final_info: " + final_info)
             final_port = int(final_info)
             return str(final_port)
         except ConnectionRefusedError:
             print("FAILED TO CONNECT TO AUTH")
             exit(1)
 
-    except socket.timeout:
-        return "NXDOMAIN"
-    except ValueError:
+    except (ValueError, socket.timeout):
         return "NXDOMAIN"
 
 
@@ -96,7 +89,6 @@ def main(args: list[str]) -> None:
     try:
         while True:
             domain = input()
-            #print("user_input: " + domain)
             if is_valid_domain(domain):
                 print(resolve_domain(root_port, domain, timeout))
             else:

@@ -1,13 +1,6 @@
-"""
-Write code for your verifier here.
-
-You may import library modules allowed by the specs, as well as your own other modules.
-"""
 from sys import argv
-
 from recursor import is_valid_domain
 from pathlib import Path
-
 
 
 def main(args: list[str]) -> None:
@@ -55,25 +48,15 @@ def main(args: list[str]) -> None:
 
     def search_for_eq(match, port_key, og_key):
         for file in matching_files:
-            with open(file,"r") as f:
+            with open(file, "r") as f:
                 temp = f.readlines()
-                #print(port_key)
+
                 if temp[0] == port_key or port_key == -1:
                     temp = temp[1:]
-                    #print(temp)
                     for line in temp:
                         parts = line.split(",")
-                        # print("port_key for now")
-                        # print(int(port_key))
-                        # print("parts:")
-                        # print(parts)
-                        # print(og_key.strip())
-                        # print(parts[1].strip())
-                        # print(parts[1].strip()==og_key.strip())
-                        # print()
                         if parts[0] == match and parts[1].strip() == og_key.strip() and port_key != -1:
                             return True
-                        # print(parts[0].split("."))
                         if (port_key == -1):
                             if (len(parts[0].split(".")) == 1):
                                 if search_for_eq(match, parts[1], og_key):
@@ -89,8 +72,6 @@ def main(args: list[str]) -> None:
 
     result = True
     for line in master_data:
-        # print("full_domain:")
-        # print(line.strip())
         parts = line.split(",")
         full_domain = parts[0]
         port = parts[1]
@@ -108,7 +89,6 @@ def main(args: list[str]) -> None:
         exit()
 
     pass
-
 
 
 if __name__ == "__main__":

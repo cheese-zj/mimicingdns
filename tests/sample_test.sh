@@ -13,7 +13,8 @@ echo fake recursor sends EXIT
 # terminate the server by sending EXIT command
 printf '!EXIT\n' | nc localhost 1024
 # delay 0.1s
-sleep 0.1
+sleep 0.2
 # print the coverage report, expect 100% coverage rate
 coverage report -m
 # just output the coverage without testing the output
+coverage html --directory tests/coverage_report

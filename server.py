@@ -1,21 +1,18 @@
-"""
-Write code for your server here.
-
-You may import library modules allowed by the specs, as well as your own other modules.
-"""
 from sys import argv
 import socket
 
-THISPORT = 1000
+THIS_PORT = 1000
+
+
 # Load records from config_file
 def load_records(config_file):
     records = dict()
     try:
         with open(config_file, 'r') as f:
-            configdata=f.readlines()
-            global THISPORT
-            THISPORT = int(configdata[0])
-            for line in configdata[1:]:
+            config_data = f.readlines()
+            global THIS_PORT
+            THIS_PORT = int(config_data[0])
+            for line in config_data[1:]:
                 hostname, port = line.strip().split(',')
                 if all(s.isalnum() for s in hostname.split(".")):
                     records[hostname] = int(port)
@@ -28,9 +25,8 @@ def load_records(config_file):
 
 
 def handle_client(conn, records):
-    data = conn.recv(THISPORT).decode().strip()
-    if data.startswith("!"):
-        # Command Handling
+    data = conn.recv(THIS_PORT).decode().strip()
+    if data.startswith("!"):  # Command Handling
         parts = data[1:].split(' ')
         cmd = parts[0]
         if cmd == "ADD" and len(parts) == 3:
@@ -48,14 +44,14 @@ def handle_client(conn, records):
         else:
             print("INVALID")
     elif data in records:
-        conn.sendall((str(records[data])+"\n").encode())
+        conn.sendall((str(records[data]) + "\n").encode())
         print(f"resolve {data} to {records[data]}")
     else:
         conn.sendall("NXDOMAIN\n".encode())
         print(f"resolve {data} to NXDOMAIN")
 
-def main(args: list[str]) -> None:
 
+def main(args: list[str]) -> None:
     if len(args) != 1:
         print("INVALID ARGUMENTS")
         exit()
@@ -68,7 +64,7 @@ def main(args: list[str]) -> None:
     # https://stackoverflow.com/questions/6380057/python-binding-socket-address-already-in-use
 
     try:
-        s.bind(("", THISPORT))
+        s.bind(("", THIS_PORT))
         s.listen()
     except (PermissionError, socket.timeout):
         print("INVALID CONFIGURATION")
@@ -77,6 +73,7 @@ def main(args: list[str]) -> None:
     while True:
         conn, addr = s.accept()
         handle_client(conn, records)
+
 
 if __name__ == "__main__":
     main(argv[1:])

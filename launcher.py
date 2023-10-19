@@ -3,7 +3,6 @@ from recursor import is_valid_domain
 from pathlib import Path
 
 
-
 def main(args: list[str]) -> None:
     if len(args) != 2:
         print("INVALID ARGUMENTS")
@@ -22,11 +21,11 @@ def main(args: list[str]) -> None:
             master_data = master_data[1:]
             for line in master_data:
                 domain = line.split(",")[0]
-                #print(domain)
+                # print(domain)
                 if not is_valid_domain(domain):
                     raise Exception
                 port = int(line.split(",")[1])
-                #print(port)
+                # print(port)
                 if not 1024 <= port <= 65535:
                     raise Exception
 
@@ -50,14 +49,14 @@ def main(args: list[str]) -> None:
 
     for line in master_data:
         reflect = line.split(",")
-        auth[reflect[0]]=int(reflect[1].strip())
+        auth[reflect[0]] = int(reflect[1].strip())
         used_port.add(int(reflect[1].strip()))
         roots.add(reflect[0].split(".")[-1])  # add roots eg "com" into roots set
-    with open(dir_of_single_files+"/root.conf", "w") as root_f:
-        root_f.write(str(port_pointer)+"\n")
+    with open(dir_of_single_files + "/root.conf", "w") as root_f:
+        root_f.write(str(port_pointer) + "\n")
         port_pointer = pointer_mover()
         for root in roots:
-            root_f.write(root+","+str(port_pointer)+"\n")
+            root_f.write(root + "," + str(port_pointer) + "\n")
             port_pointer = pointer_mover()
 
     with open(dir_of_single_files + "/root.conf", "r") as root_f:
@@ -65,7 +64,7 @@ def main(args: list[str]) -> None:
         for line in data:
             line = line.split(",")
             with open(dir_of_single_files + "/tld-" + line[0] + ".conf", "w") as tld_f:
-                tld_f.write(line[1].strip()+"\n")
+                tld_f.write(line[1].strip() + "\n")
                 for item in auth:
                     if item.split(".")[-1] == line[0]:
                         parts = item.split(".")
@@ -83,9 +82,9 @@ def main(args: list[str]) -> None:
                 line = line.split(",")
                 f_dir = dir_of_single_files + "/auth-" + line[0].split(".")[0] + ".conf"
                 with open(f_dir, "w") as auth_f:
-                    auth_f.write(line[1].strip()+"\n")
+                    auth_f.write(line[1].strip() + "\n")
                     for item in auth:
-                        if item.split(".")[-2]+"."+item.split(".")[-1] == line[0]:
+                        if item.split(".")[-2] + "." + item.split(".")[-1] == line[0]:
                             auth_f.write(f"{item},{auth[item]}\n")
 
     pass

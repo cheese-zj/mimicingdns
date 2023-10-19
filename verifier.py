@@ -66,25 +66,33 @@ def main(args: list[str]) -> None:
                     for line in temp:
                         parts = line.split(",")
                         # print("port_key for now")
-                        # print(port_key.strip())
+                        # print(int(port_key))
                         # print("parts:")
                         # print(parts)
-                        # print()
                         # print(og_key.strip())
                         # print(parts[1].strip())
                         # print(parts[1].strip()==og_key.strip())
-                        if parts[0] == match and parts[1].strip() == og_key.strip():
+                        # print()
+                        if parts[0] == match and parts[1].strip() == og_key.strip() and port_key != -1:
                             return True
-                        if search_for_eq(match, parts[1], og_key):
-                            return True
+                        # print(parts[0].split("."))
+                        if (port_key == -1):
+                            if (len(parts[0].split(".")) == 1):
+                                if search_for_eq(match, parts[1], og_key):
+                                    return True
+                            else:
+                                pass
+                        else:
+                            if search_for_eq(match, parts[1], og_key):
+                                return True
         return False
 
     # print(key)
 
     result = True
     for line in master_data:
-        # print("full_domain:")
-        # print(line.strip())
+        print("full_domain:")
+        print(line.strip())
         parts = line.split(",")
         full_domain = parts[0]
         port = parts[1]

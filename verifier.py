@@ -60,7 +60,7 @@ def main(args: list[str]) -> None:
             with open(file,"r") as f:
                 temp = f.readlines()
                 #print(port_key)
-                if temp[0] == port_key or port_key is None:
+                if temp[0] == port_key or port_key == -1:
                     temp = temp[1:]
                     #print(temp)
                     for line in temp:
@@ -77,7 +77,7 @@ def main(args: list[str]) -> None:
                             return True
                         if search_for_eq(match, parts[1], og_key):
                             return True
-        #return False
+        return False
 
     # print(key)
 
@@ -89,7 +89,7 @@ def main(args: list[str]) -> None:
         full_domain = parts[0]
         port = parts[1]
         try:
-            result = result and search_for_eq(full_domain, None, port)
+            result = result and search_for_eq(full_domain, -1, port)
         except OSError:
             print("neq")
             exit()

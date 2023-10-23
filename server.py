@@ -28,7 +28,7 @@ def handle_client(conn, records):
     data = conn.recv(THIS_PORT).decode()
     while not data.endswith("\n"):
         data += conn.recv(THIS_PORT).decode()
-
+    data = data.strip()
     if data.startswith("!"):  # Command Handling
         parts = data[1:].split(' ')
         cmd = parts[0]

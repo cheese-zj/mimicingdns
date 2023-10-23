@@ -18,14 +18,17 @@ def load_records(config_file):
                     records[hostname] = int(port)
                 else:
                     raise Exception
-    except (FileNotFoundError, TypeError, Exception):
+    except (FileNotFoundError, TypeError, Exception, PermissionError):
         print("INVALID CONFIGURATION")
         exit(1)
     return records
 
 
 def handle_client(conn, records):
-    data = conn.recv(THIS_PORT).decode().strip()
+    data = conn.recv(THIS_PORT).decode()
+    while not data.endswith("\n"):
+        data += conn.recv(THIS_PORT).decode()
+
     if data.startswith("!"):  # Command Handling
         parts = data[1:].split(' ')
         cmd = parts[0]

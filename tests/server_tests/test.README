@@ -1,0 +1,4 @@
+The invalid_args.sh and launch_fail.sh is testing for bad launch calls thus there's no .in and .out for them.
+
+I put z infront of z_cmd_exit.in just to ensure it's excuted the last place to exit the server.
+(TBH this should be done separately, ya..)

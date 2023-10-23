@@ -1,7 +1,7 @@
 from sys import argv
 import socket
 
-THIS_PORT = 1000
+THIS_PORT = 0
 
 
 # Load records from config_file
@@ -66,7 +66,7 @@ def main(args: list[str]) -> None:
     try:
         s.bind(("", THIS_PORT))
         s.listen()
-    except (PermissionError, socket.timeout):
+    except (PermissionError, socket.timeout, OSError):
         print("INVALID CONFIGURATION")
         exit(1)
 

@@ -1,6 +1,7 @@
 from sys import argv
 import socket
 
+
 THIS_PORT = 0
 SAVED_INPUT = ""
 
@@ -24,22 +25,28 @@ def load_records(config_file):
         exit(1)
     return records
 
-
-def handle_client(conn, records):
+def msg_buffer(conn):
     global SAVED_INPUT
     data = SAVED_INPUT + conn.recv(THIS_PORT).decode()
-    if data.endswith("\n") is False:
-        SAVED_INPUT = data
-        conn.close()
-    else:
-        SAVED_INPUT = ""
-        data = data.strip()
+    messages = data.split("\n")
+
+    # Last item could be a part of an incomplete message, popping it to the saved slot
+    SAVED_INPUT = messages.pop()
+
+    # Return list of complete messages
+    return messages
+def handle_client(conn, records):
+    messages = msg_buffer(conn)
+    for data in messages:
+        if not data:  # Empty line, skip
+            continue
         if data.startswith("!"):  # Command Handling
             parts = data[1:].split(' ')
             cmd = parts[0]
             if cmd == "ADD" and len(parts) == 3:
                 hostname, port = parts[1], parts[2]
-                if hostname not in records and 1024 <= int(port) <= 65535:
+                if hostname not in records and 1024 <= int(port) <= 65535 \
+                        and all(s.isalnum() for s in hostname.split(".")):
                     records[hostname] = int(port)
                 elif hostname in records:
                     records[hostname] = int(port)
@@ -51,14 +58,14 @@ def handle_client(conn, records):
                 exit(0)
             else:
                 print("INVALID")
-                conn.close()
+                conn.sendall("INVALID\n".encode())
         elif data in records:
             conn.sendall((str(records[data]) + "\n").encode())
             print(f"resolve {data} to {records[data]}")
         else:
             conn.sendall("NXDOMAIN\n".encode())
             print(f"resolve {data} to NXDOMAIN")
-        conn.close()
+    conn.close()
 
 
 def main(args: list[str]) -> None:

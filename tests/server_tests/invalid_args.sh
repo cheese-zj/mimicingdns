@@ -16,7 +16,6 @@ sleep 2
 coverage run --append server.py tests/server_tests/sample.conf &
 sleep 2
 coverage run --append server.py tests/server_tests/sample.conf &
-sleep 1
 
 printf '!EXIT\n' | ncat localhost 1024
 sleep 0.2

@@ -1,7 +1,6 @@
 from sys import argv
 import socket
 
-
 THIS_PORT = 0
 SAVED_INPUT = ""
 
@@ -25,6 +24,7 @@ def load_records(config_file):
         exit(1)
     return records
 
+
 def msg_buffer(conn):
     global SAVED_INPUT
     data = SAVED_INPUT + conn.recv(THIS_PORT).decode()
@@ -35,6 +35,8 @@ def msg_buffer(conn):
 
     # Return list of complete messages
     return messages
+
+
 def handle_client(conn, records):
     messages = msg_buffer(conn)
     for data in messages:

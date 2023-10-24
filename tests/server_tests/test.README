@@ -1,0 +1,9 @@
+Some specific test problems are stated in README file in specific tests
+: bad_launch_tests/port_in_use
+
+3 parts of testing:
+    bad_launch_tests : cases of server.py won't be launched correctly
+    buffer_tests : multiple .in files to test buffer
+    msg_tests : test all the basic functions of server.py
+
+abandon_files... I kept them there but nothing's executed, including informal tests and samples for inspection reasons.

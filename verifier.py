@@ -7,8 +7,12 @@ def main(args: list[str]) -> None:
     if len(args) != 2:
         print("invalid arguments")
         exit()
+
+    # Assigning the paths from the passed arguments
     master_file = str(args[0])
     dir_of_single_files = str(args[1])
+
+    # Check if the specified directory exists
     if Path(dir_of_single_files).is_dir() is False:
         print("singles io error")
         exit(1)
@@ -30,10 +34,11 @@ def main(args: list[str]) -> None:
         print("invalid master")
         exit(1)
 
+    # all '.conf' files in the specified directory turned into list
     search_dir = Path(dir_of_single_files)
     matching_files = list(search_dir.glob("*.conf"))
 
-    # Single file validation:
+    # Single file validation process for '.conf' files
     for file in matching_files:
         with open(file, "r") as f:
             data = f.readlines()[1:]
@@ -44,8 +49,10 @@ def main(args: list[str]) -> None:
                         print("invalid single")
                         exit(1)
 
+    # Skip the master port and continue with the rest of the data
     master_data = master_data[1:]
 
+    # Recursive function to search for domain-port pairs match between master and individual files
     def search_for_eq(match, port_key, og_key):
         for file in matching_files:
             with open(file, "r") as f:
@@ -68,9 +75,9 @@ def main(args: list[str]) -> None:
                                 return True
         return False
 
-    # print(key)
-
     result = True
+
+    # Cross-check all domain-port pairs from master with all individual files
     for line in master_data:
         parts = line.split(",")
         full_domain = parts[0]

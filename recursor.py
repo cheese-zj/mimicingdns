@@ -10,22 +10,22 @@ def is_valid_domain(domain):
     # Split by dots
     parts = domain.split('.')
 
-    # Ensure there are at least 3 parts (C, B, A)
+    # Ensure there are at least 3 parts (AUTH, TLD, ROOT)
     if len(parts) < 3:
         return False
 
-    # Validate A and B
+    # Validate ROOT and TLD
     if not all(all(c.isalnum() or c == '-' for c in part) for part in parts[-2:]):
         return False
-    # Validate C
-    C = ".".join(parts[:-2])
-    if C.startswith('.') or C.endswith('.'):
+    # Validate AUTH
+    auth = ".".join(parts[:-2])
+    if auth.startswith('.') or auth.endswith('.'):
         return False
-    if not all(c.isalnum() or c in ['-', '.'] for c in C):
+    if not all(c.isalnum() or c in ['-', '.'] for c in auth):
         return False
     return True
 
-
+# Function to query a server on a specific port with a given message
 def query_server(port, message, timeout):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.settimeout(timeout)
@@ -41,7 +41,7 @@ def resolve_domain(root_port, domain, timeout):
         port = root_port
         message = domain.split('.')[-1] + '\n'
 
-        # Try to connect to the root server
+        # Query the root server for the TLD port
         try:
             tld_info = query_server(port, message, timeout)
             tld_port = int(tld_info)
@@ -52,7 +52,7 @@ def resolve_domain(root_port, domain, timeout):
         domain_parts = domain.split('.')
         message = '.'.join(domain_parts[-2:]) + '\n'
 
-        # Try to connect to the TLD server
+        # Query the TLD server for the AUTH's port
         try:
             auth_info = query_server(tld_port, message, timeout)
             auth_port = int(auth_info)
@@ -60,6 +60,7 @@ def resolve_domain(root_port, domain, timeout):
             print("FAILED TO CONNECT TO TLD")
             exit(1)
 
+        # Query the AUTH server for the final port
         try:
             final_info = query_server(auth_port, domain + '\n', timeout)
             final_port = int(final_info)
@@ -77,6 +78,7 @@ def main(args: list[str]) -> None:
         print("INVALID ARGUMENTS")
         exit()
 
+    # Parse arguments for root server port and timeout
     try:
         root_port = int(args[0])
         if not (0 <= root_port <= 65535):
@@ -86,6 +88,7 @@ def main(args: list[str]) -> None:
         print("INVALID ARGUMENTS")
         exit()
 
+    # Keep reading domain names and resolving them until EOF
     try:
         while True:
             domain = input()

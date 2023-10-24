@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # start a hard-coded server in background by coverage
-coverage run --append server.py tests/server_tests/sample.conf &
+coverage run --append server.py tests/server_tests/sample.conf > ~/nxdomain/tests/tmp.actual.out &
 sleep 2
-
 
 echo fake recursor sends ADD?
 
@@ -23,6 +22,9 @@ echo '!ADD au 2001' | ncat localhost 1024 &  # Send message to the server
 sleep 0.2
 
 echo '!DEL au' | ncat localhost 1024 &  # Send message to the server
+sleep 0.2
+
+echo '' | ncat localhost 1024 &  # Send message to the server
 sleep 0.2
 
 printf 'co' | ncat localhost 1024 &  # Send message to the server

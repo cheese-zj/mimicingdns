@@ -1,0 +1,15 @@
+Somehow port_in_use test will produce a difference in .out and the actual out
+
+DIFF:
+1,2c1
+< INVALID
+< CONFIGURATION
+---
+> INVALID CONFIGURATION
+
+From observation this seems to be a problem caused by catching stdout from the
+running server and the error msg from the new server trying to launch using the same port.
+Yet the latency between them (or not that) is somehow causing this random new line output.
+
+This won't really affect much in terms of branch coverage.
+So I still manage to put this in as the test itself is working perfectly fine?

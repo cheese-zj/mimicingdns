@@ -64,7 +64,7 @@ def handle_client(conn, records):
         elif data in records:
             conn.sendall((str(records[data]) + "\n").encode())
             print(f"resolve {data} to {records[data]}")
-        else:
+        elif all(s.isalnum() for s in data.split(".")):
             conn.sendall("NXDOMAIN\n".encode())
             print(f"resolve {data} to NXDOMAIN")
     conn.close()
